@@ -1,20 +1,35 @@
 #include "GameEngine.h"
+#include <cstdio>
 
 /// @brief
 namespace CMPUT350 {
 #include "FontData.h"
 
 GameEngine::GameEngine(unsigned int width, unsigned int height, const std::string& name) {
-    // Sample font loading code
-    //	if (!mFont->openFromMemory(&_font, _font_len))
-    //	{
-    //		fprintf(stderr, "WARNING: Font did not load.\n");
-    //	}
+    mWindow = std::make_shared<sf::RenderWindow>(
+        sf::VideoMode({width, height}),
+        name
+    );
+
+    mWindow->setFramerateLimit(30);
+
+    mFont = std::make_shared<sf::Font>();
+
+    if (!mFont->openFromMemory(&_font, _font_len)) {
+        fprintf(stderr, "WARNING: Font did not load.\n");
+    }
+
+    mDrawContext = std::make_shared<DrawContext>(mWindow, mFont);
+
+    mGameContext.mEngineView = this;
+    mGameContext.ScreenContext = mDrawContext.get();
 }
 
 GameEngine::~GameEngine() {
     // Cleanup resources
-    // mWindow->close();
+    if (mWindow != nullptr){
+        mWindow->close();
+    }
 }
 
 void GameEngine::AddGameObject(std::shared_ptr<GameObject> gameObject) {}
