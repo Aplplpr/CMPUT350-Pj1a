@@ -22,6 +22,14 @@ void Bullet::Update(CMPUT350::GameContext* context)
     mPreviousLocation = mLocation;
     mLocation += mHeading;
     mBounds = CMPUT350::Rect(mPreviousLocation, mLocation);
+    //if bullet is out of screen, kill it
+    if (mLocation.x < 0 ||
+        mLocation.x > context->ScreenContext->GetWindowWidth() ||
+        mLocation.y < 0 ||
+        mLocation.y > context->ScreenContext->GetWindowHeight())
+    {
+        Kill();
+    }
 }
 
 void Bullet::LateUpdate(CMPUT350::GameContext* context)

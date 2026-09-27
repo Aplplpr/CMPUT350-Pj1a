@@ -2,6 +2,8 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+#include <vector>
+
 namespace CMPUT350 {
 class GameEngine;
 }
@@ -36,6 +38,10 @@ private:
     std::shared_ptr<sf::Font> mFont;
     std::shared_ptr<DrawContext> mDrawContext;
     GameContext mGameContext;
+
+    std::vector<std::shared_ptr<GameObject>> mGameObjects;
+    std::vector<std::shared_ptr<GameObject>> mNewGameObjects;
+    
 };
 
 }  // namespace CMPUT350
