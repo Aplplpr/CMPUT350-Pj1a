@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "GameContext.h"
 #include <algorithm>
+#include <SFML/Window/Keyboard.hpp>
 
 Player::Player(CMPUT350::Point2D loc)
 :mLocation(loc), mBounds(loc - 20.0f, 40, 40),mAlive(true)
@@ -16,6 +17,26 @@ void Player::Initialize(CMPUT350::GameContext* context)
 
 void Player::Update(CMPUT350::GameContext* context)
 {
+    const float speed = 10.0f;
+    const float halfWidth = 20.0f;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)){
+        mLocation.x -= speed;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)){
+        mLocation.x += speed;
+    }
+
+    // Do not allow the player to leave the screen
+    float screenWidth = context->ScreenContext->GetWindowWidth();
+    if (mLocation.x < halfWidth){
+        mLocation.x = halfWidth;
+    }
+    if (mLocation.x > screenWidth - halfWidth){
+        mLocation.x = screenWidth - halfWidth;
+    }
+    mBounds = CMPUT350::Rect(mLocation- 20.0f,40,40);
 }
 
 void Player::LateUpdate(CMPUT350::GameContext* context)
@@ -24,16 +45,6 @@ void Player::LateUpdate(CMPUT350::GameContext* context)
 
 bool Player::HandleKeyEvent(CMPUT350::GameContext* context, char key)
 {
-    if (key == 'a' || key == 'A'){
-        mLocation.x -= 10;
-        mBounds = CMPUT350::Rect(mLocation - 20.0f, 40, 40);
-        return true;
-    }
-    if (key == 'd' || key == 'D'){
-        mLocation.x += 10;
-        mBounds = CMPUT350::Rect(mLocation - 20.0f, 40, 40);
-        return true;
-    }
     if (key == ' ')
     {
         mBullets.erase(
