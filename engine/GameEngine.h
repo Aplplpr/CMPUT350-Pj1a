@@ -2,6 +2,8 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+#include <vector>
+
 namespace CMPUT350 {
 class GameEngine;
 }
@@ -10,11 +12,22 @@ class GameEngine;
 #include "GameObject.h"
 #include "MathUtil.h"
 #include <SFML/Graphics.hpp>
+#include "DrawContext.h"
+#include "GameContext.h"
 
 namespace CMPUT350 {
 
 class DrawContext;
 
+/**
+ * @brief Main engine class that owns the game window, rendering resources,
+ *        game context, and active game objects.
+ *
+ * The GameEngine manages the lifetime of engine resources and game objects,
+ * and provides the main interface for adding objects and running the game.
+ *
+ * AI-generated documentation.
+ */
 class GameEngine : public EngineView {
 public:
     GameEngine(unsigned int width, unsigned int height, const std::string& name);
@@ -30,8 +43,14 @@ public:
     void Run();
 
 private:
-    //	std::shared_ptr<sf::RenderWindow> mWindow;
-    //	std::shared_ptr<sf::Font> mFont;
+    std::shared_ptr<sf::RenderWindow> mWindow; // Shared SFML window used by the engine and drawing context
+    std::shared_ptr<sf::Font> mFont; // Shared font resource
+    std::shared_ptr<DrawContext> mDrawContext; // Drawing interface used by game objects
+    GameContext mGameContext; // Context passed to game objects during initialization, update, and rendering
+
+    std::vector<std::shared_ptr<GameObject>> mGameObjects; // Game objects currently active in the engine
+    std::vector<std::shared_ptr<GameObject>> mNewGameObjects; // Game objects waiting to be activated at the start of the next frame
+    
 };
 
 }  // namespace CMPUT350
