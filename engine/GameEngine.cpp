@@ -7,6 +7,19 @@
 namespace CMPUT350 {
 #include "FontData.h"
 
+/**
+ * @brief Creates and initializes the game engine.
+ *
+ * @param width The width of the game window in pixels.
+ * @param height The height of the game window in pixels.
+ * @param name The title displayed on the game window.
+ *
+ * This constructor creates the SFML window, limits the frame rate,
+ * loads the embedded font, creates the drawing context, and connects
+ * the game context to the engine and drawing system.
+ *
+ * AI-generated documentation.
+ */
 GameEngine::GameEngine(unsigned int width, unsigned int height, const std::string& name) {
     mWindow = std::make_shared<sf::RenderWindow>(
         sf::VideoMode({width, height}),
@@ -27,6 +40,11 @@ GameEngine::GameEngine(unsigned int width, unsigned int height, const std::strin
     mGameContext.ScreenContext = mDrawContext.get();
 }
 
+/**
+ * @brief Destroys the game engine and closes the render window.
+ *
+ * AI-generated documentation.
+ */
 GameEngine::~GameEngine() {
     // Cleanup resources
     if (mWindow != nullptr){
@@ -34,20 +52,37 @@ GameEngine::~GameEngine() {
     }
 }
 
+/**
+ * @brief Queues a game object to be added to the engine.
+ *
+ * @param gameObject Shared pointer to the game object being added.
+ *
+ * The object is stored in the pending-object collection and is not
+ * activated until the beginning of the next frame.
+ *
+ * AI-generated documentation.
+ */
 void GameEngine::AddGameObject(std::shared_ptr<GameObject> gameObject) {
     mNewGameObjects.push_back(gameObject);
 }
 
 /**
- * @method Run
- * @arguments None
- * @description Gives control to the game engine. Will not return until the game window is closed or
- * all objects have been destroyed.
+ * @brief Runs the main game loop until the window is closed.
+ *
+ * Each frame removes inactive objects, activates newly added objects,
+ * processes input events, updates game objects, checks collisions,
+ * performs late updates, renders the scene, and displays the frame.
+ *
+ * AI-generated documentation.
  */
 void GameEngine::Run() {
     while (mWindow->isOpen())  // window is open
     {
         // 0. Remove any objects that are now dead
+        // Compact the active object vector in place by copying
+        // only living objects toward the front, then resize once. This avoids repeated
+        // vector erase operations and prevents O(n^2) shifting.
+        // This method is suggested by ai, as it could improve the the efficiency of removing dead objects
         size_t writeIndex = 0;
         for (size_t readIndex = 0; readIndex < mGameObjects.size(); ++readIndex) {
             if (mGameObjects[readIndex]->IsAlive()) {
@@ -97,7 +132,7 @@ void GameEngine::Run() {
                 continue;
             }
 
-            for (size_t b = a + 1; b < mGameObjects.size(); ++b) {
+            for (size_t b = a + 1; b < mGameObjects.size(); ++b) { //avoids checking an object against itself
                 auto objB =
                     std::dynamic_pointer_cast<CollisionObject>(mGameObjects[b]);
 
